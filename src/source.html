@@ -31,16 +31,34 @@ Released under the MIT license: http://jsbin.mit-license.org
     }
   </style>
   <script>
-    function Figura(tipo, x, y) {
-      this.tipo = tipo;
-      this.x = x;
-      this.y = y;
-      this.toString = function () {
-        return "FIGURA: Tipo: " + this.tipo + " [x:" + this.x + " , y:" + this.y + "]";
+
+    class Figura{
+      constructor(tipo, context, x1, y1, x2, y2, lineWidth, stroke, fill, radius){
+        this.tipo = tipo;
+        this.context = context;
+        this.x1 = x1;
+        this.y1 = y1;
+        if (x2 && y2) {
+          this.x2 = x2;
+          this.y2 = y2;
+        }
+        if (lineWidth && stroke) {
+          this.lineWidth = lineWidth;
+          this.stroke = stroke;
+        }
       }
     }
 
+    class Individual {
+      constructor() {
+        this.canvas = [];
+        this.figures = [];
+        this.figureTypes = [];
+        this.aptitude = 0;
+      }
+    }
 
+    
     function CrearPoblaciónInicial() {
       var individuo = new Array();
       for (var i = 0; i < 5; i++) {
@@ -54,7 +72,18 @@ Released under the MIT license: http://jsbin.mit-license.org
       console.log(individuo[1].toString());
     }
 
-
+    function Crossover(individual1, individual2){
+      var newInvididual = new Array();
+      for (var i = 0; i < individual1.length; i++) {
+        if (i%2 == 0) {
+          newInvididual[i] = individual1[i];
+        }
+        else {
+          newInvididual[i] = individual2[i];
+        }
+      }
+      return newInvididual;
+    }
 
     var img = new Image;
     var src = "https://picsum.photos/200/300";
@@ -98,11 +127,9 @@ Released under the MIT license: http://jsbin.mit-license.org
         x1 = Math.floor((Math.random() * 100) + 1);
         y1 = Math.floor((Math.random() * 100) + 1);
         fill = "#" + Math.floor((Math.random() * 100) + 1) + Math.floor((Math.random() * 100) + 1) + Math.floor((Math.random() * 100) + 1);
-        stroke = "#" + Math.floor((Math.random() * 100) + 1) + Math.floor((Math.random() * 100) + 1) + Math.floor((Math.random() * 100) + 1);
         radius = Math.floor((Math.random() * 20) + 1);
-        lineWidth = Math.floor((Math.random() * 5) + 1);
 
-        drawCircle(context, x1, y1, radius, fill, 3, stroke);
+        drawCircle(context, x1, y1, radius, fill);
       }
 
       for (var i = 0; i < nLines; i++) {
@@ -113,6 +140,7 @@ Released under the MIT license: http://jsbin.mit-license.org
         stroke = "#" + Math.floor((Math.random() * 100) + 1) + Math.floor((Math.random() * 100) + 1) + Math.floor((Math.random() * 100) + 1);
         lineWidth = Math.floor((Math.random() * 5) + 1);
 
+        // Guardarlos
         drawLine(context, x1, y1, x2, y2, lineWidth, stroke);
       }
 
@@ -125,18 +153,15 @@ Released under the MIT license: http://jsbin.mit-license.org
         stroke = "#" + Math.floor((Math.random() * 100) + 1) + Math.floor((Math.random() * 100) + 1) + Math.floor((Math.random() * 100) + 1);
         lineWidth = Math.floor((Math.random() * 5) + 1);
 
-        drawRectangle(context, x1, y1, x2, y2, fill, lineWidth, stroke);
+        drawRectangle(context, x1, y1, x2, y2, fill);
       }
     }
 
-    function drawRectangle(context, x1, y1, x2, y2, fill, lineWidth, stroke) {
+    function drawRectangle(context, x1, y1, x2, y2, fill) {
       context.beginPath();
       context.rect(x1, y1, x2, y2);
       context.fillStyle = fill;
       context.fill();
-      context.lineWidth = lineWidth;
-      context.strokeStyle = stroke;
-      context.stroke();
     }
 
     function drawLine(context, x1, y1, x2, y2, lineWidth, stroke) {
@@ -148,14 +173,11 @@ Released under the MIT license: http://jsbin.mit-license.org
       context.stroke();
     }
 
-    function drawCircle(context, x, y, radius, fill, lineWidth, stroke) {
+    function drawCircle(context, x, y, radius, fill) {
       context.beginPath();
       context.arc(x, y, radius, 0, 2 * Math.PI, false);
       context.fillStyle = fill;
       context.fill();
-      context.lineWidth = lineWidth;
-      context.strokeStyle = stroke;
-      context.stroke();
     }
 
 
