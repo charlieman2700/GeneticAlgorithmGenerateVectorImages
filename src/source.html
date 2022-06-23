@@ -32,27 +32,24 @@ Released under the MIT license: http://jsbin.mit-license.org
   </style>
   <script>
 
-    class Figura{
-      constructor(tipo, context, x1, y1, x2, y2, lineWidth, stroke, fill, radius){
+    class Shape{
+      constructor(tipo, context){
         this.tipo = tipo;
         this.context = context;
-        this.x1 = x1;
-        this.y1 = y1;
-        if (x2 && y2) {
-          this.x2 = x2;
-          this.y2 = y2;
-        }
-        if (lineWidth && stroke) {
-          this.lineWidth = lineWidth;
-          this.stroke = stroke;
-        }
+        this.x1 = 0;
+        this.y1 = 0;
+        this.x2 = 0;
+        this.y2 = 0;
+        this.lineWidth = 0;
+        this.stroke = [0,0,0];
+        this.getImage(tipo, context);
       }
     }
 
     class Individual {
       constructor() {
         this.canvas = [];
-        this.figures = [];
+        this.shapes = [];
         this.figureTypes = [];
         this.aptitude = 0;
       }
