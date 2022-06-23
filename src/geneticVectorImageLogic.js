@@ -1,28 +1,78 @@
-class Shape{
-  constructor(tipo, context){
-    this.tipo = tipo;
+function getRandomHexColor() {
+  let hexColor = "#"
+  hexColor += Math.floor((Math.random() * 100) + 1)
+  hexColor += Math.floor((Math.random() * 100) + 1)
+  hexColor += Math.floor((Math.random() * 100) + 1)
+  return hexColor
+}
+
+
+function getRandomNumber(range) {
+  return Math.floor((Math.random() * range) + 1)
+}
+class Shape {
+  constructor(context, x1 = getRandomNumber(100), y1 = getRandomNumber(100), fillColor = getRandomHexColor()) {
     this.context = context;
-    this.x1 = 0;
-    this.y1 = 0;
-    this.x2 = 0;
-    this.y2 = 0;
-    this.lineWidth = 0;
-    this.stroke = [0,0,0];
-    this.getImage(tipo, context);
+    this.fillColor = fillColor
+    this.x1 = x1
+    this.y1 = y1
+    draw()
+
   }
 }
 
-class Individual {
-  constructor() {
-    this.canvas = [];
-    this.shapes = [];
-    this.figureTypes = [];
-    this.aptitude = 0;
+class Circle extends Shape {
+  constructor(context, x1, y1, radius = getRandomNumber(20), fillColor) {
+    super(context, x1, y1, fillColor)
+    this.radius = radius;
+  }
+
+  draw() {
+    drawCircle(this.context, this.x1, this.y1, this.radius, this.fillColor);
   }
 }
+
+
+class Rectangle extends Shape {
+  constructor(context, x1, y1, x2 = getRandomNumber(100), y2 = getRandomNumber(100), fillColor) {
+    super(context, x1, y1, fillColor)
+    this.x2 = x2
+    this.y2 = y2
+  }
+  draw() {
+    drawRectangle(this.context, this.x1, this.y1, this.x2, this.y2, this.fillColor);
+  }
+}
+
+class Specimen {
+  constructor() {
+    this.canvas = []
+    this.shapes = []
+    this.aptitude = 0
+  }
+}
+
 
 
 function CrearPoblaciónInicial() {
+  // crear todos los Specimens
+  const specimenQty = 15
+  let population = []
+
+  for (let index = 0; index < specimenQty; index++) {
+    const specimen = new Specimen()
+    const nCircles = getRandomNumber(25)
+    const nRectangles = getRandomNumber(25)
+
+    for (let circle = 0; circle < nCircles; circle++) {
+      specimen.shapes.push(new Circle())
+    }
+
+    population.push(specimen)
+  }
+
+  // Crear las figuras para llenar los especimenes
+
   var individuo = new Array();
   for (var i = 0; i < 5; i++) {
     var tipo = 'círculo';
@@ -35,10 +85,10 @@ function CrearPoblaciónInicial() {
   console.log(individuo[1].toString());
 }
 
-function Crossover(individual1, individual2){
+function Crossover(individual1, individual2) {
   var newInvididual = new Array();
   for (var i = 0; i < individual1.length; i++) {
-    if (i%2 == 0) {
+    if (i % 2 == 0) {
       newInvididual[i] = individual1[i];
     }
     else {
@@ -58,7 +108,7 @@ context = [];
 var imgData;
 var nImages = 15;
 var imageData = [];
-img.onload = function () {
+img.onload = function() {
   // CrearPoblaciónInicial();
   ctx.drawImage(img, 0, 0);
   imgData = ctx.getImageData(0, 0, 100, 100);
@@ -87,12 +137,6 @@ function getImage(context) {
   nRectangles = Math.floor((Math.random() * 3) + 1);
 
   for (var i = 0; i < nCircles; i++) {
-    x1 = Math.floor((Math.random() * 100) + 1);
-    y1 = Math.floor((Math.random() * 100) + 1);
-    fill = "#" + Math.floor((Math.random() * 100) + 1) + Math.floor((Math.random() * 100) + 1) + Math.floor((Math.random() * 100) + 1);
-    radius = Math.floor((Math.random() * 20) + 1);
-
-    drawCircle(context, x1, y1, radius, fill);
   }
 
   for (var i = 0; i < nLines; i++) {
