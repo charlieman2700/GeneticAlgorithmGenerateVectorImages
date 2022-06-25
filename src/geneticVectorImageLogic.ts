@@ -1,4 +1,4 @@
-function getRandomHexColor () : string {
+function getRandomHexColor(): string {
   let hexColor = '#'
   hexColor += Math.floor((Math.random() * 100) + 1)
   hexColor += Math.floor((Math.random() * 100) + 1)
@@ -6,57 +6,57 @@ function getRandomHexColor () : string {
   return hexColor
 }
 
-function getRandomNumber (range:number) {
+function getRandomNumber(range: number) {
   return Math.floor((Math.random() * range) + 1)
 }
 
 class Shape {
-  fillColor:string
+  fillColor: string
   x1: number
   y1: number
 
-  constructor (x1 = getRandomNumber(100), y1 = getRandomNumber(100), fillColor = getRandomHexColor()) {
+  constructor(x1 = getRandomNumber(100), y1 = getRandomNumber(100), fillColor = getRandomHexColor()) {
     this.fillColor = fillColor
     this.x1 = x1
     this.y1 = y1
   }
 
-  draw = function (context:any) {}
+  draw = function(context: any) { }
 }
 
 class Circle extends Shape {
   radius: number
-  constructor (x1? :number, y1? :number, radius = getRandomNumber(20), fillColor? :string) {
+  constructor(x1?: number, y1?: number, radius = getRandomNumber(20), fillColor?: string) {
     super(x1, y1, fillColor)
     this.radius = radius
   }
 
-  draw = function (context:any) {
+  draw = function(context: any) {
     drawCircle(context, this.x1, this.y1, this.radius, this.fillColor)
   }
 }
 
 class Rectangle extends Shape {
-  x2:number
-  y2:number
-  constructor (x1?:number, y1? :number, x2:number = getRandomNumber(100), y2 = getRandomNumber(100), fillColor? :string) {
+  x2: number
+  y2: number
+  constructor(x1?: number, y1?: number, x2: number = getRandomNumber(100), y2 = getRandomNumber(100), fillColor?: string) {
     super(x1, y1, fillColor)
     this.x2 = x2
     this.y2 = y2
   }
 
-  draw = function () {
+  draw = function() {
     drawRectangle(this.context, this.x1, this.y1, this.x2, this.y2, this.fillColor)
   }
 }
 
 class Specimen {
-  canvas : any
-  shapes :Shape[]
+  canvas: any
+  shapes: Shape[]
   aptitude: number
   context: any
 
-  constructor () {
+  constructor() {
     this.canvas = document.createElement('canvas')
     this.canvas.width = this.canvas.height = '100'
     this.context = this.canvas.getContext('2d')
@@ -67,7 +67,7 @@ class Specimen {
 }
 
 // Adapted from https://dev.to/codebubb/how-to-shuffle-an-array-in-javascript-2ikj
-function FischerYatesAlgorithm (shapes:Shape[]) {
+function FischerYatesAlgorithm(shapes: Shape[]) {
   for (let i = shapes.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
     const temp = shapes[i]
@@ -78,7 +78,7 @@ function FischerYatesAlgorithm (shapes:Shape[]) {
 
 // Choose random amount of shapes that would be propagated in crossover from each parent specimen.
 // Propagate first 50 (if there are as many) shapes to child specimen.
-function Crossover (specimenAlpha:Specimen, specimenBeta:Specimen) {
+function Crossover(specimenAlpha: Specimen, specimenBeta: Specimen) {
   const newSpecimen = new Specimen()
   const newSpecimenShapes = specimenAlpha.shapes
   newSpecimenShapes.concat(specimenBeta.shapes)
@@ -88,7 +88,7 @@ function Crossover (specimenAlpha:Specimen, specimenBeta:Specimen) {
   return newSpecimen
 }
 
-function CrearPoblaciónInicial () {
+function CrearPoblaciónInicial() {
   // crear todos los Specimens
   const specimenQty = 15
   const population = []
@@ -155,7 +155,7 @@ function CrearPoblaciónInicial () {
 //
 // main()
 
-function renderAllShapes (specimens: Specimen[], imgData:any, table:any) {
+function renderAllShapes(specimens: Specimen[], imgData: any, table: any) {
   let specimenRendered = 0
   specimens.forEach(specimen => {
     specimen.shapes.forEach(shape => {
@@ -173,14 +173,14 @@ function renderAllShapes (specimens: Specimen[], imgData:any, table:any) {
   })
 }
 
-function drawRectangle (context: any, x1:number, y1: number, x2:number, y2:number, fill:string) {
+function drawRectangle(context: any, x1: number, y1: number, x2: number, y2: number, fill: string) {
   context.beginPath()
   context.rect(x1, y1, x2, y2)
   context.fillStyle = fill
   context.fill()
 }
 
-function drawLine (context, x1, y1, x2, y2, lineWidth, stroke) {
+function drawLine(context, x1, y1, x2, y2, lineWidth, stroke) {
   context.beginPath()
   context.moveTo(x1, y1)
   context.lineTo(x2, y2)
@@ -189,14 +189,14 @@ function drawLine (context, x1, y1, x2, y2, lineWidth, stroke) {
   context.stroke()
 }
 
-function drawCircle (context, x, y, radius, fill) {
+function drawCircle(context, x, y, radius, fill) {
   context.beginPath()
   context.arc(x, y, radius, 0, 2 * Math.PI, false)
   context.fillStyle = fill
   context.fill()
 }
 
-function similarity (imageData1: any, imageData2:any) {
+function similarity(imageData1: any, imageData2: any) {
   data1 = imageData1.data
   data2 = imageData2.data
   suma = 0
