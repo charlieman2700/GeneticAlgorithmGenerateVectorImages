@@ -20,7 +20,7 @@ class Shape {
     this.x1 = x1
     this.y1 = y1
   }
-  draw = function(context: any) { }
+  draw = function(context: CanvasRenderingContext2D) { }
 }
 
 class Circle extends Shape {
@@ -30,7 +30,7 @@ class Circle extends Shape {
     this.radius = radius
   }
 
-  draw = function(context: any) {
+  draw = function(context: CanvasRenderingContext2D) {
     drawCircle(context, this.x1, this.y1, this.radius, this.fillColor)
   }
 }
@@ -44,20 +44,20 @@ class Rectangle extends Shape {
     this.y2 = y2
   }
 
-  draw = function() {
-    drawRectangle(this.context, this.x1, this.y1, this.x2, this.y2, this.fillColor)
+  draw = function(context: CanvasRenderingContext2D) {
+    drawRectangle(context, this.x1, this.y1, this.x2, this.y2, this.fillColor)
   }
 }
 
 class Specimen {
-  canvas: any
+  canvas: HTMLCanvasElement
   shapes: Shape[]
   aptitude: number
-  context: any
+  context: CanvasRenderingContext2D
 
   constructor() {
     this.canvas = document.createElement('canvas')
-    this.canvas.width = this.canvas.height = '100'
+    this.canvas.width = this.canvas.height = 100
     this.context = this.canvas.getContext('2d')
     this.context.font = 'italic 10pt Calibri'
     this.shapes = []
@@ -87,9 +87,8 @@ function Crossover(specimenAlpha: Specimen, specimenBeta: Specimen) {
   return newSpecimen
 }
 
-function CrearPoblaciónInicial() {
+function generatePopulation(specimenQty: number): Specimen[] {
   // crear todos los Specimens
-  const specimenQty = 15
   const population = []
 
   for (let index = 0; index < specimenQty; index++) {
@@ -107,19 +106,47 @@ function CrearPoblaciónInicial() {
 
     population.push(specimen)
   }
+  return population
 }
 
 
 
+function main() {
+  const specimenQty = 15
+  const table = document.getElementById('table') as HTMLTableElement
+  const src = 'https://picsum.photos/200/300'
+  const img = document.createElement('img') as HTMLImageElement
+  const originalImageCanvas = document.getElementById('canvas') as HTMLCanvasElement
+
+
+  const originalImageContext = originalImageCanvas.getContext('2d')
+  img.src = src
+  img.crossOrigin = 'Anonymous'
+  let originalImageData: ImageData
+
+  img.onload = function() {
+    originalImageContext.drawImage(img, 0, 0)
+    originalImageData = originalImageContext.getImageData(0, 0, 100, 100)
+    const population = generatePopulation(specimenQty)
 
 
 
 
+
+
+    renderAllShapes(population, originalImageData, table)
+    console.log(population)
+  }
+
+
+}
+
+main()
 
 
 
 // function main () {
-//   const img = new Image()
+//   const img = new Image() 
 //   const src = 'https://picsum.photos/200/300'
 //   const cvs = document.getElementById('canvas')
 //   const ctx = cvs.getContext('2d')
@@ -154,32 +181,35 @@ function CrearPoblaciónInicial() {
 //
 // main()
 
-function renderAllShapes(specimens: Specimen[], imgData: any, table: any) {
+function renderAllShapes(specimens: Specimen[], imgData: ImageData, table: HTMLTableElement) {
+  console.log()
   let specimenRendered = 0
+  let row: HTMLTableRowElement
   specimens.forEach(specimen => {
+    if (specimenRendered % 5 === 0) {
+      row = table.insertRow(table.rows.length)
+
+    }
     specimen.shapes.forEach(shape => {
-      let row: any
-      if (specimenRendered % 5 === 0) {
-        row = table.insertRow(table.rows.length)
-      }
+      console.log(specimenRendered)
       shape.draw(specimen.context)
-      const specimenImageData = specimen.context.getImageData(0, 0, 100, 100)
-      specimenRendered++
-      specimen.aptitude = similarity(imgData, specimenImageData)
-      specimen.context.fillText(specimen.aptitude, 10, 95)
-      row.appendChild(specimen.canvas)
     })
+    const specimenImageData = specimen.context.getImageData(0, 0, 100, 100)
+    specimen.aptitude = similarity(imgData, specimenImageData)
+    specimen.context.fillText(specimen.aptitude.toString(), 10, 95)
+    row.appendChild(specimen.canvas)
+    specimenRendered++
   })
 }
 
-function drawRectangle(context: any, x1: number, y1: number, x2: number, y2: number, fill: string) {
+function drawRectangle(context: CanvasRenderingContext2D, x1: number, y1: number, x2: number, y2: number, fill: string) {
   context.beginPath()
   context.rect(x1, y1, x2, y2)
   context.fillStyle = fill
   context.fill()
 }
 
-function drawLine(context, x1, y1, x2, y2, lineWidth, stroke) {
+function drawLine(context: any, x1, y1, x2, y2, lineWidth, stroke) {
   context.beginPath()
   context.moveTo(x1, y1)
   context.lineTo(x2, y2)
@@ -195,10 +225,10 @@ function drawCircle(context, x, y, radius, fill) {
   context.fill()
 }
 
-function similarity(imageData1: any, imageData2: any) {
-  data1 = imageData1.data
-  data2 = imageData2.data
-  suma = 0
+function similarity(imageData1: ImageData, imageData2: ImageData): number {
+  const data2 = imageData2.data
+  const data1 = imageData1.data
+  let suma = 0
   for (let i = 0; i < data1.length; i += 4) {
     suma += Math.pow((data1[i] - data2[i]), 2)
     suma += Math.pow((data1[i + 1] - data2[i + 1]), 2)
