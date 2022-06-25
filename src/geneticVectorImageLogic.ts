@@ -38,6 +38,7 @@ class Circle extends Shape {
 class Rectangle extends Shape {
   x2: number
   y2: number
+
   constructor(x1?: number, y1?: number, x2: number = getRandomNumber(100), y2 = getRandomNumber(100), fillColor?: string) {
     super(x1, y1, fillColor)
     this.x2 = x2
@@ -66,7 +67,7 @@ class Specimen {
 }
 
 // Adapted from https://dev.to/codebubb/how-to-shuffle-an-array-in-javascript-2ikj
-function FischerYatesAlgorithm(shapes: Shape[]) {
+function fischerYatesAlgorithm(shapes: Shape[]) {
   for (let i = shapes.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
     const temp = shapes[i]
@@ -77,11 +78,13 @@ function FischerYatesAlgorithm(shapes: Shape[]) {
 
 // Choose random amount of shapes that would be propagated in crossover from each parent specimen.
 // Propagate first 50 (if there are as many) shapes to child specimen.
-function Crossover(specimenAlpha: Specimen, specimenBeta: Specimen) {
+function Crossover(specimenAlpha: Specimen, specimenBeta: Specimen): Specimen {
+  console.log(specimenAlpha)
+  console.log(specimenBeta)
   const newSpecimen = new Specimen()
-  const newSpecimenShapes = specimenAlpha.shapes
-  newSpecimenShapes.concat(specimenBeta.shapes)
-  FischerYatesAlgorithm(newSpecimenShapes)
+  let newSpecimenShapes = specimenAlpha.shapes
+  newSpecimenShapes = newSpecimenShapes.concat(specimenBeta.shapes)
+  fischerYatesAlgorithm(newSpecimenShapes)
   newSpecimen.shapes = newSpecimenShapes.slice(0, Math.min(newSpecimenShapes.length, 50))
 
   return newSpecimen
@@ -108,7 +111,7 @@ function generatePopulation(specimenQty: number): Specimen[] {
   return population
 }
 
-function selectSpecimenForMixing(population: Specimen[]) {
+function selectSpecimenForMixing(population: Specimen[]): Specimen[] {
   let selectedSpecimens: Specimen[] = []
   // 80 de los mejores    10 peores 
   const bestLastIndex = Math.round(population.length * 0.8)
@@ -121,10 +124,19 @@ function selectSpecimenForMixing(population: Specimen[]) {
 
 }
 
+function generateNextGeneration(selectedSpecimens: Specimen[], populationSize: number): Specimen[] {
+  const newGeneration: Specimen[] = []
+  for (let newSpecimen = 0; newSpecimen < populationSize; newSpecimen++) {
+    newGeneration.push(Crossover(selectedSpecimens[getRandomNumber(selectedSpecimens.length - 1)], selectedSpecimens[getRandomNumber(selectedSpecimens.length - 1)]))
+  }
+  return newGeneration
+}
+
 function main() {
   const specimenQty = 100
   const table = document.getElementById('table') as HTMLTableElement
   const src = 'https://picsum.photos/200/300'
+  // const src = '../resources/black.png'
   const img = document.createElement('img') as HTMLImageElement
   const originalImageCanvas = document.getElementById('canvas') as HTMLCanvasElement
 
@@ -137,15 +149,15 @@ function main() {
   img.onload = function() {
     originalImageContext.drawImage(img, 0, 0)
     originalImageData = originalImageContext.getImageData(0, 0, 100, 100)
-    const population = generatePopulation(specimenQty)
-
-
-
+    let population = generatePopulation(specimenQty)
 
     renderAllShapes(population, originalImageData, table)
     population.sort((specimenAlpha, specimenBeta) => (specimenAlpha.aptitude > specimenBeta.aptitude) ? 1 : -1)
     console.log(population)
     console.log("se escogen estos")
+
+    const selectedSpecimens = selectSpecimenForMixing(population)
+    population = generateNextGeneration(selectedSpecimens, specimenQty)
     console.log(selectSpecimenForMixing(population))
   }
 
@@ -165,7 +177,6 @@ function renderAllShapes(specimens: Specimen[], imgData: ImageData, table: HTMLT
       row = table.insertRow(table.rows.length)
     }
     specimen.shapes.forEach(shape => {
-      console.log(specimenRendered)
       shape.draw(specimen.context)
     })
     const specimenImageData = specimen.context.getImageData(0, 0, 100, 100)
