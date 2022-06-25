@@ -46,8 +46,7 @@ class Rectangle extends Shape {
   }
 
   draw = function() {
-    adfadsf
-    // drawRectangle(this.context, this.x1, this.y1, this.x2, this.y2, this.fillColor)
+    drawRectangle(this.context, this.x1, this.y1, this.x2, this.y2, this.fillColor)
   }
 }
 
