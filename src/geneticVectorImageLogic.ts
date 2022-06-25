@@ -88,7 +88,6 @@ function Crossover(specimenAlpha: Specimen, specimenBeta: Specimen) {
 }
 
 function generatePopulation(specimenQty: number): Specimen[] {
-  // crear todos los Specimens
   const population = []
 
   for (let index = 0; index < specimenQty; index++) {
@@ -109,10 +108,21 @@ function generatePopulation(specimenQty: number): Specimen[] {
   return population
 }
 
+function selectSpecimenForMixing(population: Specimen[]) {
+  let selectedSpecimens: Specimen[] = []
+  // 80 de los mejores    10 peores 
+  const bestLastIndex = Math.round(population.length * 0.8)
+  const worstBeginIndex = Math.round(population.length * 0.9)
 
+  selectedSpecimens = population.slice(0, bestLastIndex)
+  selectedSpecimens = selectedSpecimens.concat(population.slice(worstBeginIndex, population.length))
+
+  return selectedSpecimens
+
+}
 
 function main() {
-  const specimenQty = 15
+  const specimenQty = 100
   const table = document.getElementById('table') as HTMLTableElement
   const src = 'https://picsum.photos/200/300'
   const img = document.createElement('img') as HTMLImageElement
@@ -132,10 +142,11 @@ function main() {
 
 
 
-
-
     renderAllShapes(population, originalImageData, table)
+    population.sort((specimenAlpha, specimenBeta) => (specimenAlpha.aptitude > specimenBeta.aptitude) ? 1 : -1)
     console.log(population)
+    console.log("se escogen estos")
+    console.log(selectSpecimenForMixing(population))
   }
 
 
@@ -145,42 +156,6 @@ main()
 
 
 
-// function main () {
-//   const img = new Image() 
-//   const src = 'https://picsum.photos/200/300'
-//   const cvs = document.getElementById('canvas')
-//   const ctx = cvs.getContext('2d')
-//   img.src = src
-//   img.crossOrigin = 'Anonymous'
-//   const canvas = []
-//   const context = []
-//   let imgData:any
-//   const nImages = 15
-//   const imageData = []
-//   img.onload = function () {
-//   // CrearPoblaciónInicial();
-//     ctx.drawImage(img, 0, 0)
-//     imgData = ctx.getImageData(0, 0, 100, 100)
-//     const table = document.getElementById('table')
-//     for (let i = 0; i < nImages; i++) {
-//       if (i % 5 === 0) {
-//         const row = table.insertRow(table.rows.length)
-//       }
-//       canvas[i] = document.createElement('canvas')
-//       canvas[i].width = canvas[i].height = '100'
-//       context[i] = canvas[i].getContext('2d')
-//       getImage(context[i])
-//       // context[i].putImageData(imgData,0,0) ;
-//       imageData[i] = context[i].getImageData(0, 0, 100, 100)
-//       context[i].font = 'italic 10pt Calibri'
-//       context[i].fillText(similarity(imgData, imageData[i]), 10, 95)
-//       row.appendChild(canvas[i])
-//     }
-//   }
-// }
-//
-// main()
-
 function renderAllShapes(specimens: Specimen[], imgData: ImageData, table: HTMLTableElement) {
   console.log()
   let specimenRendered = 0
@@ -188,7 +163,6 @@ function renderAllShapes(specimens: Specimen[], imgData: ImageData, table: HTMLT
   specimens.forEach(specimen => {
     if (specimenRendered % 5 === 0) {
       row = table.insertRow(table.rows.length)
-
     }
     specimen.shapes.forEach(shape => {
       console.log(specimenRendered)
