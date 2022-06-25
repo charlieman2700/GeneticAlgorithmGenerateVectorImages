@@ -20,7 +20,8 @@ class Shape {
     this.x1 = x1
     this.y1 = y1
   }
-
+  //Probando merge desde vim 
+  asdlf
   draw = function(context: any) { }
 }
 
