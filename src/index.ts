@@ -1,14 +1,16 @@
-import { generateNextGeneration, generatePopulation, selectSpecimenForMixing, similarity, Specimen } from "./Specimen";
+import { generateNextGeneration, generatePopulation, selectSpecimenForCrossing, similarity, Specimen } from "./Specimen";
+
+
 
 function main() {
   const specimenQty = 100
-  const table = document.getElementById('table') as HTMLTableElement
+ 
   const src = 'https://picsum.photos/200/300'
   // const src = '../resources/black.png'
   const img = document.createElement('img') as HTMLImageElement
   const originalImageCanvas = document.getElementById('canvas') as HTMLCanvasElement
   console.log('probando')
-
+  let population:Specimen[]
 
   const originalImageContext = originalImageCanvas.getContext('2d')
   img.src = src
@@ -20,17 +22,10 @@ function main() {
       originalImageContext.drawImage(img, 0, 0)
 
       originalImageData = originalImageContext.getImageData(0, 0, 100, 100)
-      let population = generatePopulation(specimenQty)
+      population = generatePopulation(specimenQty)
 
       renderAllShapes(population, originalImageData, table)
-      population.sort((specimenAlpha, specimenBeta) => (specimenAlpha.aptitude > specimenBeta.aptitude) ? 1 : -1)
-
-      console.log(population)
-      console.log("se escogen estos")
-
-      const selectedSpecimens = selectSpecimenForMixing(population)
-      population = generateNextGeneration(selectedSpecimens, specimenQty)
-      console.log(selectSpecimenForMixing(population))
+      
     }
 
     else {
@@ -40,15 +35,30 @@ function main() {
 
   }
 
+  
 
+  function evolve(): void {
+    population.sort((specimenAlpha, specimenBeta) => (specimenAlpha.aptitude > specimenBeta.aptitude) ? 1 : -1)
+    const selectedSpecimens = selectSpecimenForCrossing(population)
+    population = generateNextGeneration(selectedSpecimens, specimenQty)
+    console.log(selectSpecimenForCrossing(population))
+    console.log(population)
+    console.log("se escogen estos")
+    renderAllShapes(population, originalImageData)
+    
+  }
+  let evolveButton: HTMLButtonElement | null
+  evolveButton = document.getElementById("evolveButton") as HTMLButtonElement
+  evolveButton? evolveButton.onclick = evolve : null
 }
 
 main()
 
 
 
-function renderAllShapes(specimens: Specimen[], imgData: ImageData, table: HTMLTableElement) {
-  console.log()
+function renderAllShapes(specimens: Specimen[], imgData: ImageData) {
+  let table = document.getElementById('table') as HTMLTableElement
+  
   let specimenRendered = 0
   let row: HTMLTableRowElement
   specimens.forEach(specimen => {

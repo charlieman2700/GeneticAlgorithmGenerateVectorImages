@@ -62,7 +62,7 @@ export function generatePopulation(specimenQty: number): Specimen[] {
   return population
 }
 
-export function selectSpecimenForMixing(population: Specimen[]): Specimen[] {
+export function selectSpecimenForCrossing(population: Specimen[]): Specimen[] {
   let selectedSpecimens: Specimen[] = []
   // 80 de los mejores    10 peores 
   const bestLastIndex = Math.round(population.length * 0.8)
