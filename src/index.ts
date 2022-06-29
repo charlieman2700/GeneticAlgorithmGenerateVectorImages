@@ -1,10 +1,11 @@
-import { generateNextGeneration, generatePopulation, selectSpecimenForCrossing, similarity, Specimen } from "./Specimen";
+import { generateNextGeneration, generatePopulation, selectSpecimenForCrossing, similarity, Specimen } from './Specimen'
 
-
-
-function main() {
+function main () {
   const specimenQty = 100
- 
+  let specimenMutationChance = 10
+  let shapesMutationChance = 60
+  let mutationMagnitude = 5
+  // let generationCount = 1
   const src = 'https://picsum.photos/200/300'
   // const src = '../resources/black.png'
   const img = document.createElement('img') as HTMLImageElement
@@ -17,48 +18,62 @@ function main() {
   img.crossOrigin = 'Anonymous'
   let originalImageData: ImageData
 
-  img.onload = function() {
+  img.onload = function () {
     if (originalImageContext != null) {
       originalImageContext.drawImage(img, 0, 0)
 
       originalImageData = originalImageContext.getImageData(0, 0, 100, 100)
       population = generatePopulation(specimenQty)
-
-      renderAllShapes(population, originalImageData, table)
-      
+      updateAptitudes(population, originalImageData)
+      renderAllShapes(population, originalImageData)
+    } else {
+      console.log('Original Image is null')
     }
-
-    else {
-      console.log('Original Image is null');
-
-    }
-
   }
 
-  
-
-  function evolve(): void {
-    population.sort((specimenAlpha, specimenBeta) => (specimenAlpha.aptitude > specimenBeta.aptitude) ? 1 : -1)
-    const selectedSpecimens = selectSpecimenForCrossing(population)
-    population = generateNextGeneration(selectedSpecimens, specimenQty)
-    console.log(selectSpecimenForCrossing(population))
-    console.log(population)
-    console.log("se escogen estos")
-    renderAllShapes(population, originalImageData)
-    
+  function evolve (): void {
+      // console.log(generation)
+    for (let generation = 0; generation < 100; generation++) {
+      population.sort((specimenAlpha, specimenBeta) => (specimenAlpha.aptitude > specimenBeta.aptitude) ? 1 : -1)
+      const selectedSpecimens = selectSpecimenForCrossing(population)
+      generateNextGeneration(selectedSpecimens, specimenQty, specimenMutationChance, shapesMutationChance, mutationMagnitude, population)
+      // console.log(population)
+      // updateAptitudes(population, originalImageData)
+      renderAllShapes(population, originalImageData)
+    }
+    // specimenMutationChance *= 0.9
+    // shapesMutationChance *= 0.9
+    // mutationMagnitude *= 0.9
+    // let document.createElement('h1')
+    // generationCount++
   }
-  let evolveButton: HTMLButtonElement | null
-  evolveButton = document.getElementById("evolveButton") as HTMLButtonElement
-  evolveButton? evolveButton.onclick = evolve : null
+
+  const evolveButton = document.getElementById('evolveButton')
+  evolveButton ? evolveButton.onclick = evolve : evolveButton.onclick = null
 }
 
 main()
 
+function updateAptitudes (specimens: Specimen[], imgData: ImageData) {
+  // console.log('Entra a hacer update')
+  specimens.forEach(specimen => {
+    specimen.shapes.forEach(shape => {
+      if (specimen.context != null && specimen.canvas != null) {
+        shape.draw(specimen.context)
+        const specimenImageData = specimen.context.getImageData(0, 0, 100, 100)
+        specimen.aptitude = similarity(imgData, specimenImageData)
+      } else {
+        console.log('Specimen Canvas is null')
+        // console.log(specimen)
+      }
+    })
+  })
+  // console.log('Sale de hacer update')
+}
 
+function renderAllShapes (specimens: Specimen[], imgData: ImageData) {
+  const table = document.getElementById('table') as HTMLTableElement
 
-function renderAllShapes(specimens: Specimen[], imgData: ImageData) {
-  let table = document.getElementById('table') as HTMLTableElement
-  
   let specimenRendered = 0
   let row: HTMLTableRowElement
   specimens.forEach(specimen => {
@@ -73,8 +88,8 @@ function renderAllShapes(specimens: Specimen[], imgData: ImageData) {
         specimen.context.fillText(specimen.aptitude.toString(), 10, 95)
         row.appendChild(specimen.canvas)
       } else {
-        console.log('Specimen Canvas is null');
-        console.log(specimen);
+        console.log('Specimen Canvas is null')
+        // console.log(specimen)
       }
     })
     specimenRendered++
