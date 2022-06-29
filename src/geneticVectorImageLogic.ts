@@ -63,6 +63,24 @@ class Rectangle extends Shape {
   draw = function() {
     drawRectangle(this.context, this.x1, this.y1, this.x2, this.y2, this.fillColor)
   }
+  
+  mutate = function(shapeMutationChance: Number, mutationMagnitude: Number) {
+    if (getRandomNumber(100) <= shapeMutationChance) {
+      (getRandomNumber(2) < 1) ? this.x1 += mutationMagnitude : this.x1 -= mutationMagnitude
+    }
+    if (getRandomNumber(100) <= shapeMutationChance) {
+      (getRandomNumber(2) < 1) ? this.y1 += mutationMagnitude : this.y1 -= mutationMagnitude
+    }
+    if (getRandomNumber(100) <= shapeMutationChance) {
+      (getRandomNumber(2) < 1) ? this.x2 += mutationMagnitude : this.x2 -= mutationMagnitude
+    }
+    if (getRandomNumber(100) <= shapeMutationChance) {
+      (getRandomNumber(2) < 1) ? this.y2 += mutationMagnitude : this.y2 -= mutationMagnitude
+    }
+    if (getRandomNumber(100) <= shapeMutationChance) {
+      (getRandomNumber(2) < 1) ? this.fillColor += (mutationMagnitude*5) : this.fillColor -= (mutationMagnitude*5)
+    }
+  } 
 }
 
 class Specimen {
