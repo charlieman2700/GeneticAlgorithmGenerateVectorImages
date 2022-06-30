@@ -37,15 +37,15 @@ function main () {
       population.sort((specimenAlpha, specimenBeta) => (specimenAlpha.aptitude > specimenBeta.aptitude) ? 1 : -1)
       const selectedSpecimens = selectSpecimenForCrossing(population)
       generateNextGeneration(selectedSpecimens, specimenQty, specimenMutationChance, shapesMutationChance, mutationMagnitude, population)
-      // console.log(population)
+      console.log(generation)
       // updateAptitudes(population, originalImageData)
       renderAllShapes(population, originalImageData)
     }
-    // specimenMutationChance *= 0.9
-    // shapesMutationChance *= 0.9
-    // mutationMagnitude *= 0.9
-    // let document.createElement('h1')
-    // generationCount++
+     specimenMutationChance *= 0.9
+     shapesMutationChance *= 0.9
+     mutationMagnitude *= 0.9
+     //let document.createElement('h1')
+     //generationCount++
   }
 
   const evolveButton = document.getElementById('evolveButton')

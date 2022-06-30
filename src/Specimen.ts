@@ -91,7 +91,7 @@ export function generateNextGeneration (selectedSpecimens: Specimen[], populatio
     population[newSpecimen] = specimen
   }
 
-  return newGeneration
+  //return newGeneration
 }
 
 export function similarity (imageData1: ImageData, imageData2: ImageData): number {
