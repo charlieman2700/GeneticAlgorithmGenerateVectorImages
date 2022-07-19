@@ -28,7 +28,7 @@ export class Shape {
 
 export class Circle extends Shape {
   radius: number
-  constructor (x1?: number, y1?: number, radius = getRandomNumber(10) + 5, fillColor?: string) {
+  constructor (x1?: number, y1?: number, radius = getRandomNumber(15) + 10, fillColor?: string) {
     super(x1, y1, fillColor)
     this.radius = radius
   }

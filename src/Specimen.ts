@@ -70,8 +70,8 @@ export function generatePopulation (specimenQty: number): Specimen[] {
 export function selectSpecimenForCrossing (population: Specimen[]): Specimen[] {
   let selectedSpecimens: Specimen[] = []
   // 80 de los mejores    10 peores
-  const bestLastIndex = Math.round(population.length * 0.8)
-  const worstBeginIndex = Math.round(population.length * 0.95)
+  const bestLastIndex = Math.round(population.length * 0.80)
+  const worstBeginIndex = Math.round(population.length * 0.90)
 
   selectedSpecimens = population.slice(0, bestLastIndex)
   selectedSpecimens = selectedSpecimens.concat(population.slice(worstBeginIndex, population.length))

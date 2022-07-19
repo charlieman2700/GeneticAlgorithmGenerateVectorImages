@@ -2,8 +2,8 @@ import { generateNextGeneration, generatePopulation, selectSpecimenForCrossing, 
 
 function main () {
   const specimenQty = 100
-  let specimenMutationChance = 10
-  let shapesMutationChance = 60
+  let specimenMutationChance = 5
+  let shapesMutationChance = 50
   let mutationMagnitude = 5
   // let generationCount = 1
   const src = 'https://picsum.photos/200/300'
@@ -33,7 +33,7 @@ function main () {
 
   function evolve (): void {
       // console.log(generation)
-    for (let generation = 0; generation < 100; generation++) {
+    for (let generation = 0; generation < 1; generation++) {
       population.sort((specimenAlpha, specimenBeta) => (specimenAlpha.aptitude > specimenBeta.aptitude) ? 1 : -1)
       const selectedSpecimens = selectSpecimenForCrossing(population)
       generateNextGeneration(selectedSpecimens, specimenQty, specimenMutationChance, shapesMutationChance, mutationMagnitude, population)
@@ -41,8 +41,8 @@ function main () {
       // updateAptitudes(population, originalImageData)
       renderAllShapes(population, originalImageData)
     }
-     specimenMutationChance *= 0.9
-     shapesMutationChance *= 0.9
+     //specimenMutationChance = Math.min (0.95, 2)
+     shapesMutationChance = Math.max(shapesMutationChance*0.99, 5)
      mutationMagnitude *= 0.9
      //let document.createElement('h1')
      //generationCount++
