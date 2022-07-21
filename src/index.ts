@@ -1,4 +1,4 @@
-import { generateNextGeneration, generatePopulation, selectSpecimenForCrossing, similarity, Specimen } from './Specimen'
+aimport { generateNextGeneration, generatePopulation, selectSpecimenForCrossing, similarity, Specimen } from './Specimen'
 
 function main () {
   const specimenQty = 100
