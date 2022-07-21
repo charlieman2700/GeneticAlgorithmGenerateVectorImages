@@ -1,4 +1,4 @@
-timport { generateNextGeneration, generatePopulation, selectSpecimenForCrossing, similarity, Specimen } from './Specimen'
+yimport { generateNextGeneration, generatePopulation, selectSpecimenForCrossing, similarity, Specimen } from './Specimen'
 
 function main () {
   const specimenQty = 100
